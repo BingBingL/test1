@@ -3,6 +3,7 @@ var config = require('./config.js');
 var router = express.Router();
 
 var MongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 var assert = require('assert');
 var mongoDB;
 
@@ -48,7 +49,8 @@ router.post('/save', function (req, res, next) {
         data.time = req._startTime;
         var typedData = {
             type: type,
-            data: data
+            data: data,
+            public_id: req.body.public._id
         };
         mongoDB.collection('all_data').insertOne(typedData, function (err, result) {
             if (err) {
@@ -68,6 +70,7 @@ router.post('/save', function (req, res, next) {
         if (isEmpty(data) || data == null || data == undefined) {
             res.end();
         } else {
+            data.public_id = req.body.public._id;
             mongoDB.collection('active_data').insertOne(data, function (err, result) {
                 if (err) {
                     console.log('save error!', err);
