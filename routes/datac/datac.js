@@ -28,7 +28,6 @@ router.post('/save', function (req, res, next) {
     } else {
         publicData._id = publicData.id;
         publicData.time = req._startTime;
-        console.log('publicData', publicData);
         mongoDB.collection('public_data').save(publicData, function (err, result) {
             if (err) {
                 console.log('save error!', err);
@@ -51,7 +50,6 @@ router.post('/save', function (req, res, next) {
             type: type,
             data: data
         };
-        console.log("typedData", typedData);
         mongoDB.collection('all_data').insertOne(typedData, function (err, result) {
             if (err) {
                 console.log('save error!', err);
@@ -70,7 +68,6 @@ router.post('/save', function (req, res, next) {
         if (isEmpty(data) || data == null || data == undefined) {
             res.end();
         } else {
-            console.log("data", data);
             mongoDB.collection('active_data').insertOne(data, function (err, result) {
                 if (err) {
                     console.log('save error!', err);
