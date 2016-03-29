@@ -4,6 +4,10 @@
  * Module dependencies.
  */
 
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ', err);
+});
+
 var app = require('../app');
 var debug = require('debug')('test1:server');
 var http = require('http');

@@ -1,0 +1,22 @@
+上报数据格式:
+
+{
+    public: {
+        id: $imei,
+        s: $android/iOS,
+        phone: $phone_type,
+        system_version: $system_version,
+        client_version: $client_version,
+        user: $uid
+    },
+    type: $type;
+    data: $data;
+}
+
+
+
+active
+
+{
+    action:$action
+}
