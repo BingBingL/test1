@@ -61,39 +61,33 @@ router.post('/save', function (req, res, next) {
     }
 });
 
-//handle active_data
+//handle data
 router.post('/save', function (req, res, next) {
     var type = req.body.type;
     var data = req.body.data;
 
-    if (type == 'active') {
-        if (isEmpty(data) || data == null || data == undefined) {
-            res.end();
-        } else {
-            data.public_id = req.body.public._id;
-            mongoDB.collection('active_data').insertOne(data, function (err, result) {
-                if (err) {
-                    console.log('save error!', err);
-                }
-            });
-            next();
-        }
+    if (isEmpty(data) || data == null || data == undefined) {
+        res.end();
     } else {
+        data.public_id = req.body.public._id;
+        mongoDB.collection(type).insertOne(data, function (err, result) {
+            if (err) {
+                console.log('save error!', err);
+            }
+        });
         next();
     }
+
 });
 
 
 //add more handlers here;
 
 
-
 //unhandled data
 router.post('/save', function (req, res, next) {
     res.end();
 });
-
-
 
 
 function isEmpty(obj) {
