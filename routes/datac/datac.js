@@ -1,9 +1,9 @@
 var express = require('express');
 var config = require('./config.js');
 var router = express.Router();
+var analyse = require('./analyse/analyse');
 
 var MongoClient = require('mongodb').MongoClient;
-var ObjectID = require('mongodb').ObjectID;
 var assert = require('assert');
 var mongoDB;
 
@@ -16,25 +16,65 @@ MongoClient.connect(url, function (err, db) {
     mongoDB = db;
 });
 
+
 router.use(function (req, res, next) {
     next();
 });
+
+
+router.use('/analyse', analyse);
+
 
 //handle public data
 router.post('/save', function (req, res, next) {
     var publicData = req.body.public;
 
-    if (isEmpty(publicData) || publicData == null || publicData == undefined) {
+    if (!publicData || isEmpty(publicData)) {
         next({message: "null public data!", status: 401});
     } else {
-        publicData._id = publicData.id;
-        publicData.time = req._startTime;
-        mongoDB.collection('public_data').save(publicData, function (err, result) {
+        mongoDB.collection('public_data').findOne({_id: publicData.id}, function (err, doc) {
             if (err) {
-                console.log('save error!', err);
+                console.log('public find error!', err);
             }
+
+            var existData = doc;
+            if (!existData || isEmpty(existData)) {
+
+                publicData._id = publicData.id;
+                publicData.time = req._startTime;
+
+                mongoDB.collection('public_data').save(publicData, function (err, result) {
+                    if (err) {
+                        console.log('save error!', err);
+                    }
+                });
+            } else {
+                var updateDoc = {};
+
+                if (publicData.user && publicData.user != existData.user) {
+                    updateDoc.user = publicData.user;
+                }
+
+                if (publicData.client_version != existData.client_version) {
+                    updateDoc.client_version = publicData.client_version;
+                }
+
+                if (!isEmpty(updateDoc)) {
+                    updateDoc.time = req._startTime;
+                    mongoDB.collection('public_data').updateOne({_id: publicData.id},
+                        {$set: updateDoc},
+                        function (err, result) {
+                            if (err) {
+                                console.log('update error!', err);
+                            }
+                        });
+                } else {
+
+                }
+            }
+
+            next();
         });
-        next();
     }
 });
 
@@ -43,14 +83,14 @@ router.post('/save', function (req, res, next) {
     var type = req.body.type;
     var data = req.body.data;
 
-    if (isEmpty(data) || data == null || data == undefined) {
+    if (data == undefined || data == null || isEmpty(data)) {
         res.end();
     } else {
         data.time = req._startTime;
         var typedData = {
             type: type,
             data: data,
-            public_id: req.body.public._id
+            public_id: req.body.public.id
         };
         mongoDB.collection('all_data').insertOne(typedData, function (err, result) {
             if (err) {
@@ -66,10 +106,10 @@ router.post('/save', function (req, res, next) {
     var type = req.body.type;
     var data = req.body.data;
 
-    if (isEmpty(data) || data == null || data == undefined) {
+    if (data == undefined || data == null || isEmpty(data)) {
         res.end();
     } else {
-        data.public_id = req.body.public._id;
+        data.public_id = req.body.public.id;
         mongoDB.collection(type).insertOne(data, function (err, result) {
             if (err) {
                 console.log('save error!', err);
@@ -97,6 +137,5 @@ function isEmpty(obj) {
     }
     return true;
 };
-
 
 module.exports = router;
