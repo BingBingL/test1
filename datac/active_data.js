@@ -23,10 +23,10 @@ function runActiveDataForDate(date) {
     endDate.setHours(3,0,0,0);
 
 
-    var dateStr = date.toLocaleDateString();
+    var dateStr = date.getFullYear() + '_' + (date.getMonth() + 1) + "_" + date.getDate();
     var lastDate = new Date(date);
     lastDate.setDate(date.getDate() - 1);
-    var lastDateStr = lastDate.toLocaleDateString();
+    var lastDateStr = lastDate.getFullYear() + '_' + (lastDate.getMonth() + 1) + '_' + lastDate.getDate();
 
 
     console.log('startDate', startDate);
