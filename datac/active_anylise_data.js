@@ -24,7 +24,13 @@ function findData(db) {
     var collection = db.collection(collectionName);
 
     function map(){
-        var key = this.time.getFullYear() + '_' + (this.time.getMonth() + 1) + '_' + (this.time.getDate());
+        var key;
+        var date = new Date(this.time);
+        if (date.getHours() < 3) {
+            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+        } else {
+            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+        }
         // console.log('map key:' + key);
         emit(key, 1);
     }
