@@ -37,7 +37,7 @@ function findData(db) {
 
     function reduce(key, values) {
         // console.log('reduce:' + key + ', ' + values.length);
-        return values.length;
+        return Array.sum(values);
     }
 
     console.log('db map reduce!');
