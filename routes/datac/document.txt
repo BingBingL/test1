@@ -20,3 +20,11 @@ active
 {
     action:$action
 }
+
+official_activity
+
+{
+    event:$event
+    id:$official_activity_id
+
+}

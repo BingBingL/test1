@@ -17,10 +17,10 @@ function runActiveDataForDate(date) {
     var startDate = new Date(date);
     var endDate = new Date(date);
 
-    startDate.setHours(3,0,0,0);
+    startDate.setHours(3, 0, 0, 0);
 
     endDate.setDate(endDate.getDate() + 1);
-    endDate.setHours(3,0,0,0);
+    endDate.setHours(3, 0, 0, 0);
 
 
     var dateStr = date.getFullYear() + '_' + (date.getMonth() + 1) + "_" + date.getDate();
@@ -36,83 +36,70 @@ function runActiveDataForDate(date) {
 
     console.log('===========================================');
 
+    var mongoDB;
 
-    MongoClient.connect(url)
-        .then(findData);
-
-    function findData(db) {
+    MongoClient.connect(url).then(function (db) {
+        mongoDB = db;
+        return db;
+    }).then(function (db) {
         console.log('db connected');
+        var cursor = db.collection('active').find({time: {$lt: endDate, $gt: startDate}})
+            .project({_id: 0, public_id: 1, time: 1});
 
-
-        runThisCollection();
-
-        function runThisCollection() {
-            var cursor = db.collection('active').find({time: {$lt: endDate, $gt: startDate}})
-                .project({_id: 0, public_id: 1, time: 1});
-
-            var thisCollectionName = 'active_daily_' + dateStr + '_data';
-            var thisCollection = db.collection(thisCollectionName);
-            var bulk = thisCollection.initializeOrderedBulkOp();
-
-            console.log('start today loop...');
-
+        var thisCollectionName = 'active_daily_' + dateStr + '_data';
+        var thisCollection = db.collection(thisCollectionName);
+        var bulk = thisCollection.initializeOrderedBulkOp();
+        console.log('start today loop...');
+        return new Promise(function (resolve, reject) {
             cursor.forEach(function (doc) {
                 bulk.find({_id: doc.public_id}).upsert().update({$set: {_id: doc.public_id, time: doc.time}});
             }, function (err) {
                 if (err) {
                     console.log('forEach error', err);
+                    reject(err);
+                } else {
+                    resolve(bulk);
                 }
 
-                console.log('today loop over!\n\n');
-
-                console.log('start execute bulk...');
-                bulk.execute(function (err, result) {
-                    if (err) {
-                        console.log('this bulk err', err);
-                    }
-
-                    console.log('today bulk execute over!',
-                        'insert:' + result.nUpserted +
-                        ', update:' + result.nModified +
-                        '\n\n');
-
-                    var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
-                    var lastCollection = db.collection(lastCollectionName);
-                    var lastCursor = lastCollection.find();
-                    var lastBulk = thisCollection.initializeOrderedBulkOp();
-
-                    console.log('start yesterday loop...');
-
-                    lastCursor.forEach(function (doc) {
-                        lastBulk.find({_id: doc._id}).update({$set: {time: doc.time}});
-                    }, function (err) {
-                        if (err) {
-                            console.log('yesterday forEach error', err);
-                        }
-                        console.log('yesterday loop over\n\n');
-
-                        try {
-                            console.log('start execute bulk...');
-                            lastBulk.execute(function (err, result) {
-                                if (err) {
-                                    console.log('bulk error', err);
-                                }
-                                console.log('yesterday bulk execute over!',
-                                    'update:' + result.nModified +
-                                    '\n\n');
-                                db.close()
-                            })
-                        } catch (e) {
-                            console.log('bulk error\n\n');
-                            db.close()
-                        }
-                    });
-
-                })
-
             });
-        }
-
-    }
+        });
+    }).then(function (bulk) {
+        console.log('today loop over!\n\n');
+        console.log('start execute bulk...');
+        return bulk.execute();
+    }).then(function (result) {
+        console.log('today bulk execute over!',
+            'insert:' + result.nUpserted +
+            ', update:' + result.nModified +
+            '\n\n');
+        var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
+        var lastCollection = db.collection(lastCollectionName);
+        var lastCursor = lastCollection.find();
+        var lastBulk = thisCollection.initializeOrderedBulkOp();
+        console.log('start yesterday loop...');
+        return new Promise(function (resolve, reject) {
+            lastCursor.forEach(function (doc) {
+                lastBulk.find({_id: doc._id}).update({$set: {time: doc.time}});
+            }, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(lastBulk);
+                }
+            })
+        });
+    }).then(function (bulk) {
+        console.log('yesterday loop over\n\n');
+        console.log('start execute bulk...');
+        return bulk.execute();
+    }).then(function (result) {
+        console.log('yesterday bulk execute over!',
+            'update:' + result.nModified +
+            '\n\n');
+        mongoDB.close()
+    }).catch(function (err) {
+        console.log('err!:', err);
+        mongoDB.close()
+    });
 }
 
