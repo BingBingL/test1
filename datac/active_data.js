@@ -37,6 +37,7 @@ function runActiveDataForDate(date) {
     console.log('===========================================');
 
     var mongoDB;
+    var thisCollection;
 
     MongoClient.connect(url).then(function (db) {
         mongoDB = db;
@@ -47,10 +48,10 @@ function runActiveDataForDate(date) {
             .project({_id: 0, public_id: 1, time: 1});
 
         var thisCollectionName = 'active_daily_' + dateStr + '_data';
-        var thisCollection = db.collection(thisCollectionName);
+        thisCollection = db.collection(thisCollectionName);
         var bulk = thisCollection.initializeOrderedBulkOp();
         console.log('start today loop...');
-        return new Promise(function (resolve, reject) {
+        new Promise(function (resolve, reject) {
             cursor.forEach(function (doc) {
                 bulk.find({_id: doc.public_id}).upsert().update({$set: {_id: doc.public_id, time: doc.time}});
             }, function (err) {
@@ -62,44 +63,43 @@ function runActiveDataForDate(date) {
                 }
 
             });
+        }).then(function (bulk) {
+            console.log('today loop over!\n\n');
+            console.log('start execute bulk...');
+            return bulk.execute();
+        }).then(function (result) {
+            console.log('today bulk execute over!',
+                'insert:' + result.nUpserted +
+                ', update:' + result.nModified +
+                '\n\n');
+            var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
+            var lastCollection = mongoDB.collection(lastCollectionName);
+            var lastCursor = lastCollection.find();
+            var lastBulk = thisCollection.initializeOrderedBulkOp();
+            console.log('start yesterday loop...');
+            return new Promise(function (resolve, reject) {
+                lastCursor.forEach(function (doc) {
+                    lastBulk.find({_id: doc._id}).update({$set: {time: doc.time}});
+                }, function (err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(lastBulk);
+                    }
+                })
+            });
+        }).then(function (bulk) {
+            console.log('yesterday loop over\n\n');
+            console.log('start execute bulk...');
+            return bulk.execute();
+        }).then(function (result) {
+            console.log('yesterday bulk execute over!',
+                'update:' + result.nModified +
+                '\n\n');
+            mongoDB.close()
+        }).catch(function (err) {
+            console.log('err!:', err);
+            mongoDB.close()
         });
-    }).then(function (bulk) {
-        console.log('today loop over!\n\n');
-        console.log('start execute bulk...');
-        return bulk.execute();
-    }).then(function (result) {
-        console.log('today bulk execute over!',
-            'insert:' + result.nUpserted +
-            ', update:' + result.nModified +
-            '\n\n');
-        var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
-        var lastCollection = mongoDB.collection(lastCollectionName);
-        var lastCursor = lastCollection.find();
-        var lastBulk = thisCollection.initializeOrderedBulkOp();
-        console.log('start yesterday loop...');
-        return new Promise(function (resolve, reject) {
-            lastCursor.forEach(function (doc) {
-                lastBulk.find({_id: doc._id}).update({$set: {time: doc.time}});
-            }, function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(lastBulk);
-                }
-            })
-        });
-    }).then(function (bulk) {
-        console.log('yesterday loop over\n\n');
-        console.log('start execute bulk...');
-        return bulk.execute();
-    }).then(function (result) {
-        console.log('yesterday bulk execute over!',
-            'update:' + result.nModified +
-            '\n\n');
-        mongoDB.close()
-    }).catch(function (err) {
-        console.log('err!:', err);
-        mongoDB.close()
     });
 }
-
