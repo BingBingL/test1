@@ -24,15 +24,11 @@ function runActiveDataForDate(date) {
 
 
     var dateStr = date.getFullYear() + '_' + (date.getMonth() + 1) + "_" + date.getDate();
-    var lastDate = new Date(date);
-    lastDate.setDate(date.getDate() - 1);
-    var lastDateStr = lastDate.getFullYear() + '_' + (lastDate.getMonth() + 1) + '_' + lastDate.getDate();
 
 
     console.log('startDate', startDate);
     console.log('endDate', endDate);
     console.log('dateStr', dateStr);
-    console.log('lastDateStr', lastDateStr);
 
     console.log('===========================================');
 
@@ -71,12 +67,13 @@ function runActiveDataForDate(date) {
 
             var promiseQue = Promise.resolve();
             for (var i = 1; i < 8; i++) {
-                var day = i;
-                promiseQue = promiseQue.then(function () {
-                    var tempDate = new Date(date);
-                    tempDate.setDate(date.getDate() - day);
-                    return updateForDate(db, tempDate, thisCollection);
-                })
+                (function (i) {
+                    promiseQue = promiseQue.then(function () {
+                        var tempDate = new Date(date);
+                        tempDate.setDate(date.getDate() - i);
+                        return updateForDate(db, tempDate, thisCollection);
+                    })
+                })(i);
             }
             return promiseQue;
 
