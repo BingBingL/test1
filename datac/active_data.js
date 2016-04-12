@@ -71,9 +71,10 @@ function runActiveDataForDate(date) {
 
             var promiseQue = Promise.resolve();
             for (var i = 1; i < 8; i++) {
+                var day = i;
                 promiseQue = promiseQue.then(function () {
                     var tempDate = new Date(date);
-                    tempDate.setDate(date.getDate() - i);
+                    tempDate.setDate(date.getDate() - day);
                     return updateForDate(db, tempDate, thisCollection);
                 })
             }
