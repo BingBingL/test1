@@ -36,14 +36,10 @@ function runActiveDataForDate(date) {
 
     console.log('===========================================');
 
-    var mongoDB;
-    var thisCollection;
-
     MongoClient.connect(url).then(function (db) {
-        mongoDB = db;
-        return db;
-    }).then(function (db) {
         console.log('db connected');
+        var thisCollection;
+
         var cursor = db.collection('active').find({time: {$lt: endDate, $gt: startDate}})
             .project({_id: 0, public_id: 1, time: 1});
 
@@ -73,7 +69,7 @@ function runActiveDataForDate(date) {
                 ', update:' + result.nModified +
                 '\n\n');
             var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
-            var lastCollection = mongoDB.collection(lastCollectionName);
+            var lastCollection = db.collection(lastCollectionName);
             var lastCursor = lastCollection.find();
             var lastBulk = thisCollection.initializeOrderedBulkOp();
             console.log('start yesterday loop...');
@@ -96,10 +92,10 @@ function runActiveDataForDate(date) {
             console.log('yesterday bulk execute over!',
                 'update:' + result.nModified +
                 '\n\n');
-            mongoDB.close()
+            db.close()
         }).catch(function (err) {
             console.log('err!:', err);
-            mongoDB.close()
+            db.close()
         });
     });
 }
