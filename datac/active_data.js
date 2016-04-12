@@ -128,3 +128,12 @@ function runActiveDataForDate(date) {
 
     }
 }
+
+function isEmpty(obj) {
+    for (var name
+        in obj) {
+        return false;
+    }
+    return true;
+};
+
