@@ -61,41 +61,62 @@ function runActiveDataForDate(date) {
             });
         }).then(function (bulk) {
             console.log('today loop over!\n\n');
-            console.log('start execute bulk...');
+            console.log('start execute today bulk...');
             return bulk.execute();
         }).then(function (result) {
             console.log('today bulk execute over!',
                 'insert:' + result.nUpserted +
                 ', update:' + result.nModified +
                 '\n\n');
-            var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
-            var lastCollection = db.collection(lastCollectionName);
-            var lastCursor = lastCollection.find();
-            var lastBulk = thisCollection.initializeOrderedBulkOp();
-            console.log('start yesterday loop...');
-            return new Promise(function (resolve, reject) {
-                lastCursor.forEach(function (doc) {
-                    lastBulk.find({_id: doc._id}).update({$set: {time: doc.time}});
-                }, function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(lastBulk);
-                    }
+
+            var promiseQue = Promise.resolve();
+            for (var i = 1; i < 8; i++) {
+                promiseQue = promiseQue.then(function () {
+                    var tempDate = new Date(date);
+                    tempDate.setDate(date.getDate() - i);
+                    return updateForDate(db, tempDate, thisCollection);
                 })
-            });
-        }).then(function (bulk) {
-            console.log('yesterday loop over\n\n');
-            console.log('start execute bulk...');
-            return bulk.execute();
+            }
+            return promiseQue;
+
         }).then(function (result) {
-            console.log('yesterday bulk execute over!',
-                'update:' + result.nModified +
-                '\n\n');
+            console.log('all over!\n\n');
             db.close()
         }).catch(function (err) {
             console.log('err!:', err);
             db.close()
         });
     });
+
+    function updateForDate(db, date, targetCollection) {
+        var dateString = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + date.getDate();
+        var collectionName = 'active_daily_' + dateString + '_data';
+        var collection = db.collection(collectionName);
+        var bulk = targetCollection.initializeUnorderedBulkOp();
+        var cursor = collection.find();
+        console.log('start loop for date:', dateString);
+        return new Promise(function (resolve, reject) {
+            cursor.forEach(function (doc) {
+                bulk.find({_id: doc._id}).update({$set: {time: doc.time}});
+            }, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(bulk);
+                }
+            })
+        }).then(function (bulk) {
+            console.log('start execute bulk for date:', dateString);
+            return bulk.execute()
+        }).then(function (result) {
+            console.log(dateString + ' bulk execute over!',
+                'insert:' + result.nUpserted +
+                ', update:' + result.nModified +
+                '\n\n');
+            return Promise.resolve();
+        }).catch(function (err) {
+            return Promise.reject(err);
+        });
+
+    }
 }
