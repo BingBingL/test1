@@ -73,7 +73,7 @@ function runActiveDataForDate(date) {
             ', update:' + result.nModified +
             '\n\n');
         var lastCollectionName = 'active_daily_' + lastDateStr + '_data';
-        var lastCollection = db.collection(lastCollectionName);
+        var lastCollection = mongoDB.collection(lastCollectionName);
         var lastCursor = lastCollection.find();
         var lastBulk = thisCollection.initializeOrderedBulkOp();
         console.log('start yesterday loop...');
