@@ -6,8 +6,18 @@
 var url = 'mongodb://localhost:27017/datac';
 var MongoClient = require('mongodb').MongoClient;
 
-var yesterday = new Date();
-yesterday.setDate(yesterday.getDate() - 1);
+var dateArg = process.argv.splice(2);
+var yesterday;
+
+if (isEmpty(dateArg) || !dateArg) {
+    console.log('arg error!, use yesterday as default');
+    yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+} else {
+    console.log('arg:', dateArg);
+    yesterday = new Date(dateArg);
+}
+
 runActiveDataForDate(yesterday);
 
 function runActiveDataForDate(date) {
