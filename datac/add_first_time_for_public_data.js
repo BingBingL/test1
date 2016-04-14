@@ -30,6 +30,5 @@ MongoClient.connect(url).then(function (db) {
             console.log('err:', err);
         }
         console.log('all_result', result);
-        db.close();
     })
 });
