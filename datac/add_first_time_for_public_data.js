@@ -7,8 +7,8 @@ MongoClient.connect(url).then(function (db) {
 
     var cursor = publicCollection.find();
 
-    var findCount;
-    var updateCount;
+    var findCount = 0;
+    var updateCount = 0;
 
     cursor.forEach(function (doc) {
         allDataCollection.findOne({'public_id': doc._id}, {sort: {'data.time': 1}}).then(function (doc) {
