@@ -42,6 +42,7 @@ router.post('/save', function (req, res, next) {
 
                 publicData._id = publicData.id;
                 publicData.time = req._startTime;
+                publicData.first_time = req._startTime;
 
                 mongoDB.collection('public_data').save(publicData, function (err, result) {
                     if (err) {
