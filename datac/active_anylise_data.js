@@ -34,6 +34,7 @@ function findData(db) {
                 key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
             }
         } else {
+            console.log('revive:', date, firstDate);
             key = 'revive';
         }
         // console.log('map key:' + key);
