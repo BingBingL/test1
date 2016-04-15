@@ -33,7 +33,7 @@ function findData(db) {
             key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
         }
 
-        if (thisDate == key && ((date - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
+        if (firstDate && thisDate == key && ((date - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
             key = 'revive';
         }
         // console.log('map key:' + key);
