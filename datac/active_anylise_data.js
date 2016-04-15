@@ -33,9 +33,7 @@ function findData(db) {
             key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
         }
 
-        if (thisDate == key && date - firstDate > 1000 * 60 * 60 * 24 * 7) {
-            var str = 'thisDate:'+thisDate+', key:'+key+ 'date:'+ date+ 'first:'+ firstDate;
-            console.log(str);
+        if (thisDate == key && ((date - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
             key = 'revive';
         }
         // console.log('map key:' + key);
@@ -50,7 +48,7 @@ function findData(db) {
 
     var option = {};
     option.out = {replace: 'tempCollection'};
-    option.scope = {thisDate: date, console:console};
+    option.scope = {thisDate: date};
 
     console.log('db map reduce!', option.scope);
 
