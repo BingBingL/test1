@@ -88,8 +88,31 @@ function runActiveDataForDate(date) {
             return promiseQue;
 
         }).then(function (result) {
-            console.log('all over!\n\n');
-            db.close()
+            console.log('start add first time!\n\n');
+            var publicCollectionName = 'public_data';
+            var publicCollection = db.collection(publicCollectionName);
+            var thisCursor = thisCollection.find();
+            var firstTimeBulk = thisCollection.initializeUnorderedBulkOp();
+            var promises = [];
+            var i = 0;
+            thisCursor.forEach(function (doc) {
+                promises[i] = publicCollection.findOne({_id: doc._id}, {fields: {first_time: 1}})
+                    .then(function (doc) {
+                        firstTimeBulk.find({_id: doc._id}).update({$set: {first_time: doc.first_time}});
+                        return firstTimeBulk;
+                    });
+                i++;
+            });
+            return Promise.all(promises);
+
+
+        }).then(function (bulks) {
+            console.log('bulks', bulks);
+            var bulk = bulks[0];
+            return bulk.execute();
+        }).then(function (result) {
+            console.log('all over!!!\n\n');
+            db.close();
         }).catch(function (err) {
             console.log('err!:', err);
             db.close()
