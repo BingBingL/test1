@@ -23,17 +23,18 @@ function findData(db) {
     console.log('collectionName:' + collectionName);
     var collection = db.collection(collectionName);
 
-    function map(){
+    function map() {
         var key;
+
         var date = new Date(this.time);
         var firstDate = new Date(this.first_time);
-        if (date - firstDate <= 1000 * 60 * 60 * 24 * 7) {
-            if (date.getHours() < 3) {
-                key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
-            } else {
-                key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
-            }
+        if (date.getHours() < 3) {
+            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
         } else {
+            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+        }
+
+        if (thisDate == key && date - firstDate > 1000 * 60 * 60 * 24 * 7) {
             key = 'revive';
         }
         // console.log('map key:' + key);
@@ -45,9 +46,14 @@ function findData(db) {
         return Array.sum(values);
     }
 
+
+    var option = {};
+    option.out = {replace: 'tempCollection'};
+    option.scope = {thisDate: date};
+
     console.log('db map reduce!');
 
-    collection.mapReduce(map, reduce, {out: {replace : 'tempCollection'}}, function (err, collection) {
+    collection.mapReduce(map, reduce, option, function (err, collection) {
         if (err) {
             console.log(err);
         }
