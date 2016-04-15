@@ -5,6 +5,7 @@
 var url = 'mongodb://localhost:27017/datac';
 var MongoClient = require('mongodb').MongoClient;
 
+var reviveTime = 1000 * 60 * 60 * 24 * 7;
 
 var date = process.argv.splice(2);
 
@@ -26,10 +27,15 @@ function findData(db) {
     function map(){
         var key;
         var date = new Date(this.time);
-        if (date.getHours() < 3) {
-            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+        var firstDate = new Date(this.first_time);
+        if (date - firstDate <= reviveTime) {
+            if (date.getHours() < 3) {
+                key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+            } else {
+                key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+            }
         } else {
-            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+            key = 'revive';
         }
         // console.log('map key:' + key);
         emit(key, 1);

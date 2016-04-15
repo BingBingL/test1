@@ -52,3 +52,8 @@ if (u7) {
 } else {
     console.log('u7', false);
 }
+
+var date1 = new Date('2016-03-04');
+var date2 = new Date('2016-03-03');
+
+console.log(date1 - date2);
