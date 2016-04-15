@@ -87,30 +87,45 @@ function runActiveDataForDate(date) {
             }
             return promiseQue;
 
+        }).catch(function (err) {
+            console.log('last days err!:', err);
         }).then(function (result) {
-            console.log('start add first time!\n\n');
+            console.log('last days over!\n\n');
+            console.log('start add first time!');
             var publicCollectionName = 'public_data';
             var publicCollection = db.collection(publicCollectionName);
             var thisCursor = thisCollection.find();
             var firstTimeBulk = thisCollection.initializeUnorderedBulkOp();
             var promises = [];
             var i = 0;
-            thisCursor.forEach(function (doc) {
-                promises[i] = publicCollection.findOne({_id: doc._id}, {fields: {first_time: 1}})
-                    .then(function (doc) {
-                        firstTimeBulk.find({_id: doc._id}).update({$set: {first_time: doc.first_time}});
-                        return firstTimeBulk;
-                    });
-                i++;
+            return new Promise(function (resolve, reject) {
+                thisCursor.forEach(function (doc) {
+                    promises[i] = publicCollection.findOne({_id: doc._id}, {fields: {first_time: 1}})
+                        .then(function (doc) {
+                            if (doc) {
+                                firstTimeBulk.find({_id: doc._id}).update({$set: {first_time: doc.first_time}});
+                            }
+                            return firstTimeBulk;
+                        });
+                    i++;
+                }, function (err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log('i', i);
+                        resolve(promises);
+                    }
+                });
             });
+        }).then(function (promises) {
+            console.log('add first time loop over!');
             return Promise.all(promises);
-
-
         }).then(function (bulks) {
-            console.log('bulks', bulks);
+            console.log('add first time find over!');
             var bulk = bulks[0];
             return bulk.execute();
         }).then(function (result) {
+            console.log('add first time bulk over!\n\n');
             console.log('all over!!!\n\n');
             db.close();
         }).catch(function (err) {
