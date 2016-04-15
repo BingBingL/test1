@@ -34,6 +34,7 @@ function findData(db) {
         }
 
         if (thisDate == key && date - firstDate > 1000 * 60 * 60 * 24 * 7) {
+            console.log('thisDate:', thisDate, ', key:', key, 'date:', date, 'first:', firstDate);
             key = 'revive';
         }
         // console.log('map key:' + key);
@@ -48,7 +49,7 @@ function findData(db) {
 
     var option = {};
     option.out = {replace: 'tempCollection'};
-    option.scope = {thisDate: date};
+    option.scope = {thisDate: date, console:console};
 
     console.log('db map reduce!', option.scope);
 
