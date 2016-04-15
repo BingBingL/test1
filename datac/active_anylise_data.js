@@ -5,7 +5,6 @@
 var url = 'mongodb://localhost:27017/datac';
 var MongoClient = require('mongodb').MongoClient;
 
-var reviveTime = 1000 * 60 * 60 * 24 * 7;
 
 var date = process.argv.splice(2);
 
@@ -28,7 +27,7 @@ function findData(db) {
         var key;
         var date = new Date(this.time);
         var firstDate = new Date(this.first_time);
-        if (date - firstDate <= reviveTime) {
+        if (date - firstDate <= 1000 * 60 * 60 * 24 * 7) {
             if (date.getHours() < 3) {
                 key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
             } else {
