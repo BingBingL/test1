@@ -34,7 +34,8 @@ function findData(db) {
         }
 
         if (thisDate == key && date - firstDate > 1000 * 60 * 60 * 24 * 7) {
-            console.log('thisDate:', thisDate, ', key:', key, 'date:', date, 'first:', firstDate);
+            var str = 'thisDate:'+thisDate+', key:'+key+ 'date:'+ date+ 'first:'+ firstDate;
+            console.log(str);
             key = 'revive';
         }
         // console.log('map key:' + key);
