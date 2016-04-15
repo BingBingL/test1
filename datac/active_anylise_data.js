@@ -25,7 +25,6 @@ function findData(db) {
 
     function map() {
         var key;
-
         var date = new Date(this.time);
         var firstDate = new Date(this.first_time);
         if (date.getHours() < 3) {
@@ -51,7 +50,7 @@ function findData(db) {
     option.out = {replace: 'tempCollection'};
     option.scope = {thisDate: date};
 
-    console.log('db map reduce!');
+    console.log('db map reduce!', option.scope);
 
     collection.mapReduce(map, reduce, option, function (err, collection) {
         if (err) {
