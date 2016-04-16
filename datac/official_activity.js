@@ -35,7 +35,7 @@ MongoClient.connect(url).then(function (db) {
         if (collection) {
             var cursor = collection.find();
             cursor.forEach(function (doc) {
-                console.log(doc);
+                console.log(doc._id, doc.value.count);
 
             }, function (err) {
                 if (err) {
