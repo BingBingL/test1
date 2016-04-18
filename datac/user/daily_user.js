@@ -85,6 +85,8 @@ MongoClient.connect(url).then(function (db) {
                 } else {
                     user.from_time = doc.time;
                 }
+                user.birthday = new Date(user.birthday).toLocaleDateString();
+                user.from_time = new Date(user.from_time).toLocaleDateString();
                 return user;
             }))
         });
