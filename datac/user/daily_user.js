@@ -55,7 +55,7 @@ MongoClient.connect(url).then(function (db) {
         return connectMysql(mysqlConnection);
     }).then(function (connection) {
         var sql = "SELECT ?? FROM user_info WHERE id IN (?)";
-        var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession'];
+        var columns = ['id', 'birthday', 'city', 'gender(1:male/2:female)', 'nickname', 'identity(0:default/1:student/2:work)', 'university', 'profession'];
         var values = [columns, ids];
         return new Promise(function (resolve, reject) {
             connection.query(sql, values, function (err, results) {
@@ -82,10 +82,11 @@ MongoClient.connect(url).then(function (db) {
 
                 if (firstDate && dateStr == key && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
                     user.revive = 1;
+                    user.from_time = firstDate;
                 } else {
                     user.revive = 0;
+                    user.from_time = activeDate;
                 }
-                user.from_time = activeDate;
                 user.birthday = toDateString(new Date(user.birthday));
                 user.from_time = toDateString(new Date(user.from_time));
                 return user;
@@ -103,6 +104,7 @@ MongoClient.connect(url).then(function (db) {
                 console.log('csv error:', err);
             }
             console.log(output);
+            db.close();
         });
     }).catch(function (err) {
         console.log('err:', err);
