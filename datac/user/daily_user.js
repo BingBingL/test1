@@ -98,7 +98,7 @@ MongoClient.connect(url).then(function (db) {
         return Promise.all(promises);
     }).then(function (users) {
         var stringify = require('csv-stringify');
-        var columns = ['id', 'birthday', 'city', 'gender(1:male/2:female)', 'nickname', 'identity(0:default/1:student/2:work)', 'university', 'profession', 'from_time', 'revive'];
+        var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time', 'revive'];
         var option = {header: columns};
         stringify(users, option, function(err, output){
             if (err) {
