@@ -81,9 +81,9 @@ MongoClient.connect(url).then(function (db) {
                 }
 
                 if (firstDate && dateStr == key && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
-                    user.from_time = doc.first_time;
+                    user.revive = true;
                 } else {
-                    user.from_time = doc.time;
+                    user.revive = false;
                 }
                 user.birthday = toDateString(new Date(user.birthday));
                 user.from_time = toDateString(new Date(user.from_time));
@@ -95,7 +95,7 @@ MongoClient.connect(url).then(function (db) {
         return Promise.all(promises);
     }).then(function (users) {
         var stringify = require('csv-stringify');
-        var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time'];
+        var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time', 'revive'];
         var option = {quotedString: true, header: columns};
         stringify(users, option, function(err, output){
             if (err) {
