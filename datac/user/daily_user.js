@@ -73,19 +73,32 @@ MongoClient.connect(url).then(function (db) {
             promises.push(collection.findOne({_id: map[user.id]}).then(function (doc) {
                 var activeDate = new Date(doc.time);
                 var firstDate = new Date(doc.first_time);
-                if (activeDate && firstDate && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
+                var key;
+                if (activeDate.getHours() < 3) {
+                    key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+                } else {
+                    key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+                }
+
+                if (firstDate && dateStr == key && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
                     user.from_time = doc.first_time;
                 } else {
                     user.from_time = doc.time;
                 }
                 return user;
             }))
-        })
+        });
         return promises;
     }).then(function (promises) {
         return Promise.all(promises);
     }).then(function (users) {
-        console.log(users);
+        var stringify = require('csv-stringify');
+        stringify(users, function(err, output){
+            if (err) {
+                console.log('csv error:', err);
+            }
+            console.log(output);
+        });
     }).catch(function (err) {
         console.log('err:', err);
         db.close();
