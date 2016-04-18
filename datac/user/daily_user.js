@@ -3,7 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 var mysql      = require('mysql');
 var mysqlConnection = mysql.createConnection({
-    host     : 'rdsiyrk8j9c8y1c9281b.mysql.rds.aliyuncs.com:3306',
+    host     : 'rdsiyrk8j9c8y1c9281b.mysql.rds.aliyuncs.com',
     user     : 'bingbing',
     password : 'bingbing2016',
     database : 'production'
