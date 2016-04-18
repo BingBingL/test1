@@ -108,7 +108,7 @@ MongoClient.connect(url).then(function (db) {
             var fs= require('fs');
             var path = require('path');
             var filePath = path.join(__dirname, '../../public/datac/');
-            filePaht = path.join(filePath, dateStr.js);
+            filePaht = path.join(filePath, dateStr + '.csv');
             console.log('file path:', filePath);
             fs.writeFile(filePath, output, function (err) {
                if (err) {
