@@ -81,9 +81,9 @@ MongoClient.connect(url).then(function (db) {
                 }
 
                 if (firstDate && dateStr == key && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
-                    user.revive = true;
+                    user.revive = 1;
                 } else {
-                    user.revive = false;
+                    user.revive = 0;
                 }
                 user.from_time = activeDate;
                 user.birthday = toDateString(new Date(user.birthday));
