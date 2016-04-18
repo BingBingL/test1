@@ -62,6 +62,7 @@ MongoClient.connect(url).then(function (db) {
                 if (err) {
                     reject(err);
                 } else {
+                    connection.end();
                     resolve(results);
                 }
             })
