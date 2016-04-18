@@ -2,8 +2,8 @@
 
 {
     public: {
-        id: $imei,
-        s: $android/iOS,
+        id: $imei / $time_stamp+random(1000),
+        platform: $android/iOS,
         phone: $phone_type,
         system_version: $system_version,
         client_version: $client_version,
@@ -15,16 +15,65 @@
 
 
 
-active
+type:"active"
+data:
 
 {
     action:$action
 }
 
-official_activity
+    $action:
+        "enter"         //主界面启动
+        "bg_start"      //后台自启
+        "bg_timer"      //后台定时自启
+        "bg_broadcast"  //后台广播自启
+        "bg_boot"       //后台开机自启
+        "login"         //登陆
+
+
+
+
+type:"official_activity"
+data:
 
 {
-    event:$event
-    id:$official_activity_id
+    event:$event,
+    id:$official_activity_id,
 
+    status(event == "activity_page"): "unlogged"/"matching"/"success"/"fail"/"unjoined"/"overtime",
+    ticket(event == "commit_order"): $ticket_price,
+    award(event == "commit_order"): $award_price,
+    use_amount(event == "commit_order"): true/false,
+    channel(event == "charge") : "wx"/"alipay",
+    charge_fail_reason(event == "charge_fail"): $fail_reason,
+    join_fail_reason(event == "join_fail"): $fail_reason,
 }
+
+    $event:
+        "home_card"         //点击首页卡片
+        "activity_page"     //进入官方活动页
+        "detail_page"       //点击更多详情
+        "feedback"          //点击反馈
+        "verify"            //跳转到认证
+        "share"             //点击分享
+        "post"              //跳转到晒照
+        "share_friend"      //点击分享给朋友
+        "share_moment"      //点击分享到票圈
+        "order_page"        //进入订单页
+        "commit_order"      //提交订单
+        "charge"            //进入充值
+        "charge_fail"       //充值失败
+        "join"              //开始报名
+        "join_fail"         //报名失败
+        "join_success"      //报名成功
+
+
+type:"browse"
+data:
+
+{
+    type:"people"/"channel",
+    id: $user_id/$channel_id,
+    duration: $time_stamp_stop - $time_stamp_start
+}
+//离开页面时上报
