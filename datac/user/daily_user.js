@@ -75,9 +75,9 @@ MongoClient.connect(url).then(function (db) {
                 var firstDate = new Date(doc.first_time);
                 var key;
                 if (activeDate.getHours() < 3) {
-                    key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+                    key = activeDate.getFullYear() + '_' + (activeDate.getMonth() + 1) + '_' + (activeDate.getDate() - 1);
                 } else {
-                    key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+                    key = activeDate.getFullYear() + '_' + (activeDate.getMonth() + 1) + '_' + (activeDate.getDate());
                 }
 
                 if (firstDate && dateStr == key && ((activeDate - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
