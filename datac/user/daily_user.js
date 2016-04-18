@@ -85,6 +85,7 @@ MongoClient.connect(url).then(function (db) {
                 } else {
                     user.revive = false;
                 }
+                user.from_time = activeDate;
                 user.birthday = toDateString(new Date(user.birthday));
                 user.from_time = toDateString(new Date(user.from_time));
                 return user;
@@ -134,6 +135,10 @@ function isEmpty(obj) {
 
 function toDateString(date) {
     if (date) {
-        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        if (date.getHours() < 3) {
+            return date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+        } else {
+            return date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
+        }
     }
 }
