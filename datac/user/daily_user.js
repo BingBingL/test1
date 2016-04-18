@@ -55,7 +55,7 @@ MongoClient.connect(url).then(function (db) {
         return connectMysql(mysqlConnection);
     }).then(function (connection) {
         var sql = "SELECT ?? FROM user_info WHERE id IN (?)";
-        var columns = ['id', 'birthday', 'city', 'gender(1:male/2:female)', 'nickname', 'identity(0:default/1:student/2:work)', 'university', 'profession'];
+        var columns = ['id', 'birthday', 'city', 'gender(1male/2female)', 'nickname', 'identity(0default/1student/2work)', 'university', 'profession'];
         var values = [columns, ids];
         return new Promise(function (resolve, reject) {
             connection.query(sql, values, function (err, results) {
