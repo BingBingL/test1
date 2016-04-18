@@ -97,6 +97,7 @@ MongoClient.connect(url).then(function (db) {
     }).then(function (promises) {
         return Promise.all(promises);
     }).then(function (users) {
+        db.close();
         var stringify = require('csv-stringify');
         var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time', 'revive'];
         var option = {header: columns};
@@ -104,8 +105,16 @@ MongoClient.connect(url).then(function (db) {
             if (err) {
                 console.log('csv error:', err);
             }
-            console.log(output);
-            db.close();
+            var fs= require('fs');
+            var path = require('path');
+            var filePath = path.join(__dirname, '../../public/datac/');
+            filePaht = path.join(filePath, dateStr.js);
+            console.log('file path:', filePath);
+            fs.writeFile(filePath, output, function (err) {
+               if (err) {
+                   console.log('file write err:', err);
+               }
+            });
         });
     }).catch(function (err) {
         console.log('err:', err);
