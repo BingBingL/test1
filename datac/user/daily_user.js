@@ -85,8 +85,8 @@ MongoClient.connect(url).then(function (db) {
                 } else {
                     user.from_time = doc.time;
                 }
-                user.birthday = new Date(user.birthday).toLocaleDateString();
-                user.from_time = new Date(user.from_time).toLocaleDateString();
+                user.birthday = toDateString(new Date(user.birthday));
+                user.from_time = toDateString(new Date(user.from_time));
                 return user;
             }))
         });
@@ -131,3 +131,9 @@ function isEmpty(obj) {
     }
     return true;
 };
+
+function toDateString(date) {
+    if (date) {
+        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    }
+}
