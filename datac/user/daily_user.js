@@ -55,7 +55,7 @@ MongoClient.connect(url).then(function (db) {
         return connectMysql(mysqlConnection);
     }).then(function (connection) {
         var sql = "SELECT ?? FROM user_info LEFT JOIN user ON user_info.id = user.id WHERE id IN (?)";
-        var columns = ['id', 'phone_num', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession'];
+        var columns = ['id', 'user.phone_num', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession'];
         var values = [columns, ids];
         return new Promise(function (resolve, reject) {
             connection.query(sql, values, function (err, results) {
@@ -99,7 +99,7 @@ MongoClient.connect(url).then(function (db) {
     }).then(function (users) {
         db.close();
         var stringify = require('csv-stringify');
-        var columns = ['id', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time', 'revive'];
+        var columns = ['id', 'phone_num', 'birthday', 'city', 'gender', 'nickname', 'identity', 'university', 'profession', 'from_time', 'revive'];
         var option = {header: columns};
         stringify(users, option, function(err, output){
             if (err) {
