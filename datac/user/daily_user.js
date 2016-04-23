@@ -54,7 +54,7 @@ MongoClient.connect(url).then(function (db) {
         console.log('ids:', ids.length);
         return connectMysql(mysqlConnection);
     }).then(function (connection) {
-        var sql = "SELECT ?? FROM user_info LEFT JOIN user ON user_info.id = user.id WHERE id IN (?)";
+        var sql = "SELECT ?? FROM user_info LEFT JOIN user ON user_info.id = user.id WHERE user_info.id IN (?)";
         var columns = ['user_info.id', 'user.phone_num', 'user_info.birthday', 'user_info.city', 'user_info.gender', 'user_info.nickname', 'user_info.identity', 'user_info.university', 'user_info.profession'];
         var values = [columns, ids];
         return new Promise(function (resolve, reject) {
