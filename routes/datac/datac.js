@@ -2,6 +2,7 @@ var express = require('express');
 var config = require('./config.js');
 var router = express.Router();
 var analyse = require('./analyse/analyse');
+var globalConfig = require('../../config.js');
 
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
@@ -18,6 +19,9 @@ MongoClient.connect(url, function (err, db) {
 
 
 router.use(function (req, res, next) {
+    if ('development' == globalConfig.env) {
+        console.log(req.body);
+    }
     next();
 });
 
