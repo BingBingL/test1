@@ -46,7 +46,7 @@ function runActiveDataForDate(date) {
         console.log('db connected');
         var thisCollection;
 
-        var cursor = db.collection('active').find({time: {$lt: endDate, $gt: startDate}, public_id:{$regex:'.{40,}'}})
+        var cursor = db.collection('active').find({time: {$lt: endDate, $gt: startDate}, public_id:{$regex:'.{,40}'}})
             .project({_id: 0, public_id: 1, time: 1});
 
         var thisCollectionName = 'active_daily_' + dateStr + '_data';
