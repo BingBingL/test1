@@ -36,6 +36,11 @@ router.post('/save', function (req, res, next) {
     if (!publicData || isEmpty(publicData)) {
         next({message: "null public data!", status: 401});
     } else {
+        //FFA761C3-66E5-43E6-9B3F-F1B3069D764A146
+        if (publicData.platform == 'iOS' && publicData.id.length > 36) {
+            publicData.id = publicData.id.substr(0, 36);
+        }
+
         mongoDB.collection('public_data').findOne({_id: publicData.id}, function (err, doc) {
             if (err) {
                 console.log('public find error!', err);
