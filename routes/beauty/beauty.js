@@ -23,7 +23,6 @@ router.get('/', function (req, res, next) {
       if (err) {
         reject(err);
       } else {
-        connection.end();
         resolve(results);
       }
     })
