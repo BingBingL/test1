@@ -12,9 +12,8 @@ var mysqlConnection = mysql.createConnection({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
   connectMysql(mysqlConnection).then(function (connection) {
-    var sql = "select `nickname`  , `user`.`phone_num` ,  `click_num` / `relation_num` as `beauty`, `topo_info`.`pic_path`   FROM `topo_info` LEFT JOIN `user` ON `topo_info`.`user_id` = `user`.`id` ORDER BY `beauty`  DESC ";
+    var sql = "select `nickname`  , `user`.`phone_num` ,  `click_num` / `relation_num` as `beauty`, `topo_info`.`pic_path`   FROM `topo_info` LEFT JOIN `user` ON `topo_info`.`user_id` = `user`.`id` ORDER BY `beauty`  DESC LIMIT 200";
     return new Promise(function (resolve, reject) {
       connection.query(sql, function (err, results) {
         if (err) {
