@@ -19,6 +19,12 @@ connectMysql(mysqlConnection).then(function (connection) {
 router.get('/', function (req, res, next) {
   var limit = req.query.limit;
   var offset = req.query.offset;
+  if (!limit) {
+    limit = 200;
+  }
+  if (!offset) {
+    offset = 0;
+  }
   var sql = "select `nickname`  , `user`.`phone_num` ,  ( `click_num` / (`relation_num` + 1)) + (`click_num` / 10) + (`relation_num` / 10) as `beauty`, `topo_info`.`pic_path`   FROM `topo_info` LEFT JOIN `user` ON `topo_info`.`user_id` = `user`.`id` ORDER BY `beauty`  DESC LIMIT "+ limit + " OFFSET " + offset;
   return new Promise(function (resolve, reject) {
     mysqlCon.query(sql, function (err, results) {
