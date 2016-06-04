@@ -17,7 +17,7 @@ connectMysql(mysqlConnection).then(function (connection) {
 });
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  var sql = "select `nickname`  , `user`.`phone_num` ,  ( `click_num` / (`relation_num` + 1)) + (`click_num` / 5) + (`relation_num` / 5) as `beauty`, `topo_info`.`pic_path`   FROM `topo_info` LEFT JOIN `user` ON `topo_info`.`user_id` = `user`.`id` ORDER BY `beauty`  DESC LIMIT 200";
+  var sql = "select `nickname`  , `user`.`phone_num` ,  ( `click_num` / (`relation_num` + 1)) + (`click_num` / 10) + (`relation_num` / 10) as `beauty`, `topo_info`.`pic_path`   FROM `topo_info` LEFT JOIN `user` ON `topo_info`.`user_id` = `user`.`id` ORDER BY `beauty`  DESC LIMIT 200";
   return new Promise(function (resolve, reject) {
     mysqlCon.query(sql, function (err, results) {
       if (err) {
