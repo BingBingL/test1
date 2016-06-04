@@ -26,14 +26,10 @@ router.get('/', function(req, res, next) {
       })
     });
   }).then(function (result) {
-    console.log(result);
     res.render('beauty', { title: "BingBing's WebSite" , data:result});
   }).catch(function (err) {
     console.log(err);
   });
-
-
-
 
 });
 
