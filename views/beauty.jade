@@ -1,0 +1,18 @@
+//
+   Created by Bingbing on 16/6/4.
+
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        block content
+        h1= title
+        ul
+            each val, index in data
+                //li= index + ': ' + val
+
+                li
+                    p= val.nickname
+                    img(src='http://img.22double.com/'+val.pic_path+"@!180")
