@@ -1,0 +1,34 @@
+url:
+    debug:   http://10.2.249.178:3000/datac/save
+    release: http://data.22double.com/datac/save
+上报数据格式:
+
+{
+    public: {
+        id: $imei(或其他设备唯一识别码, 如果获取不到, 用: "f" + $time_stamp + random(1000) 代替生成, 并永久保存, 保证以后不变)
+        platform: "android"/"iOS",
+        phone: $phone_type,
+        system_version: $system_version,
+        client_version: $client_version,
+        user: $uid
+    },
+    type: $type;
+    data: $data;
+}
+
+
+
+type:"active"
+data:
+
+{
+    action:$action
+}
+
+    $action:
+        "enter"         //主界面启动
+        "bg_start"      //后台自启
+        "bg_timer"      //后台定时自启
+        "bg_broadcast"  //后台广播自启
+        "bg_boot"       //后台开机自启
+        "login"         //登陆
