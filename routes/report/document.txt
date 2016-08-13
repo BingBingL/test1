@@ -1,6 +1,6 @@
 url:
-    debug:   http://10.2.249.178:3000/datac/save
-    release: http://data.22double.com/datac/save
+    debug:   http://10.2.249.178:3000/report/save
+    release: http://report.dddsway.com/report/save
 上报数据格式:
 
 {
