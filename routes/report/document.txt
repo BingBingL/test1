@@ -1,6 +1,6 @@
 url:
-    debug:   http://10.2.249.178:3000/report/save
-    release: http://report.dddsway.com/report/save
+    debug:   http://10.2.248.157:3000/report/save
+    release: http://sway-report.22double.com/report/save
 上报数据格式:
 
 {
