@@ -10,6 +10,7 @@ var urlFilter = require('./routes/HostFilter');
 var routes = require('./routes/index');
 var datac = require('./routes/datac/datac');
 var report = require('./routes/report/report');
+var oversea = require('./routes/report/report_oversea');
 var config = require('./config.js');
 
 var app = express();
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/datac', datac);
 app.use('/report', report);
+app.use('/oversea', oversea);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

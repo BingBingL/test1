@@ -1,6 +1,7 @@
 url:
     debug:   http://10.2.248.157:3000/report/save
     release: http://sway-report.22double.com/report/save
+    oversea: http://sway-report.22double.com/oversea/save
 上报数据格式:
 
 {
