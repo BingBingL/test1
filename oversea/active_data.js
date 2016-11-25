@@ -27,10 +27,10 @@ function runActiveDataForDate(date) {
     var startDate = new Date(date);
     var endDate = new Date(date);
 
-    startDate.setHours(3, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
 
     endDate.setDate(endDate.getDate() + 1);
-    endDate.setHours(3, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
 
 
     var dateStr = date.getFullYear() + '_' + (date.getMonth() + 1) + "_" + date.getDate();
