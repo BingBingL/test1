@@ -42,7 +42,6 @@ function findData(db) {
         if (firstDate && thisDate == key && ((date - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
             key = 'revive';
         }
-        console.log('timezone' + date.getTimezoneOffset());
         emit(key, 1);
     }
 
