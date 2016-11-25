@@ -40,6 +40,9 @@ function runActiveDataForDate(date) {
     console.log('endDate', endDate);
     console.log('dateStr', dateStr);
 
+    console.log('timezoneoffset', startDate.getTimezoneOffset() + "," + endDate.getTimezoneOffset());
+    console.log('timeStamp', startDate.getTime() + "," + endDate.getTime());
+
     console.log('===========================================');
 
     MongoClient.connect(url).then(function (db) {

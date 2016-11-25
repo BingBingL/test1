@@ -33,16 +33,16 @@ function findData(db) {
         var key;
         var date = new Date(this.time);
         var firstDate = new Date(this.first_time);
-        if (date.getHours() < 3) {
-            key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
-        } else {
+        // if (date.getHours() < 3) {
+        //     key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate() - 1);
+        // } else {
             key = date.getFullYear() + '_' + (date.getMonth() + 1) + '_' + (date.getDate());
-        }
+        // }
 
         if (firstDate && thisDate == key && ((date - firstDate) > (1000 * 60 * 60 * 24 * 7))) {
             key = 'revive';
         }
-        // console.log('map key:' + key);
+        console.log('timezone' + date.getTimezoneOffset());
         emit(key, 1);
     }
 
